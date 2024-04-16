@@ -1,6 +1,6 @@
 ﻿using GeekShopping.ProductAPI.Data.DTOs;
 
-namespace GeekShopping.ProductAPI.Model.Repository
+namespace GeekShopping.ProductAPI.Repository
 {
     public interface IProductRepository
     {
