@@ -27,18 +27,18 @@ namespace GeekShopping.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductCreate(ProductViewModel productViewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var response = await _productService.CreateProduct(productViewModel);
-                if (response != null) return RedirectToAction(nameof(ProductIndex)); 
+                if (response != null) return RedirectToAction(nameof(ProductIndex));
             }
             return View(productViewModel);
-        } 
-        
+        }
+
         public async Task<IActionResult> ProductUpdate(int id)
         {
             var viewModel = await _productService.FindProductById(id);
-            if(viewModel != null) return View(viewModel);
+            if (viewModel != null) return View(viewModel);
 
             return NotFound();
         }
@@ -46,11 +46,27 @@ namespace GeekShopping.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ProductUpdate(ProductViewModel productViewModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var response = await _productService.UpdateProduct(productViewModel);
-                if (response != null) return RedirectToAction(nameof(ProductIndex)); 
+                if (response != null) return RedirectToAction(nameof(ProductIndex));
             }
+            return View(productViewModel);
+        }
+
+        public async Task<IActionResult> ProductDelete(int id)
+        {
+            var viewModel = await _productService.FindProductById(id);
+            if (viewModel != null) return View(viewModel);
+
+            return NotFound();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ProductDelete(ProductViewModel productViewModel)
+        {
+            var response = await _productService.DeleteProductById(productViewModel.Id);
+            if (response) return RedirectToAction(nameof(ProductIndex));
             return View(productViewModel);
         }
     }
