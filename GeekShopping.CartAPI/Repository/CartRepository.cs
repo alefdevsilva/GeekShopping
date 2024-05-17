@@ -26,7 +26,7 @@ namespace GeekShopping.CartAPI.Repository
         {
             var cartHeader = await _context.CartHeaders
                 .FirstOrDefaultAsync(c => c.UserId == userId);
-            if(cartHeader != null)
+            if (cartHeader != null)
             {
                 _context.CartDetails.RemoveRange(
                     _context.CartDetails.Where(c => c.CartHeaderId == cartHeader.Id));
