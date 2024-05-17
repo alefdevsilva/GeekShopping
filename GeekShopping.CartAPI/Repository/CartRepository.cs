@@ -26,7 +26,7 @@ namespace GeekShopping.CartAPI.Repository
         {
             var cartHeader = await _context.CartHeaders
                 .FirstOrDefaultAsync(c => c.UserId == userId);
-            if(cartHeader != null)
+            if (cartHeader != null)
             {
                 _context.CartDetails.RemoveRange(
                     _context.CartDetails.Where(c => c.CartHeaderId == cartHeader.Id));
@@ -113,12 +113,12 @@ namespace GeekShopping.CartAPI.Repository
             else
             {
                 var cartDetail = await _context.CartDetails.AsNoTracking().FirstOrDefaultAsync(
-                    p => p.ProductId == cartViewModel.CartDetails.FirstOrDefault().ProductId &&
+                    p => p.ProductId == cart.CartDetails.FirstOrDefault().ProductId &&
                     p.CartHeaderId == cartHeader.Id);
 
                 if (cartDetail == null)
                 {
-                    cart.CartDetails.FirstOrDefault().CartHeaderId = cart.CartHeader.Id;
+                    cart.CartDetails.FirstOrDefault().CartHeaderId = cartHeader.Id;
                     cart.CartDetails.FirstOrDefault().Product = null;
                     _context.CartDetails.Add(cart.CartDetails.FirstOrDefault());
                     await _context.SaveChangesAsync();
