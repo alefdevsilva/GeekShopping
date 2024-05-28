@@ -47,5 +47,21 @@ namespace GeekShopping.CartAPI.Controllers
             if (!status) return BadRequest();
             return Ok(status);
         }
+
+        [HttpPost("apply-coupon")]
+        public async Task<ActionResult<CartViewModel>> ApplyCoupon(CartViewModel cartViewModel)
+        {
+            var status = await _cartRepository.ApplyCoupon(cartViewModel.CartHeader.UserId, cartViewModel.CartHeader.UserId);
+            if (!status) return NotFound();
+            return Ok(status);
+        }
+        
+        [HttpDelete("remove-coupon/{userId}")]
+        public async Task<ActionResult<CartViewModel>> RemoveCoupon(string userId)
+        {
+            var status = await _cartRepository.RemoveCoupon(userId);
+            if (!status) return NotFound();
+            return Ok(status);
+        }
     }
 }
