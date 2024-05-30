@@ -87,16 +87,16 @@ namespace GeekShopping.CartAPI.Repository
 
                 if (total == 1)
                 {
-                    var cartHeaderToRemove = await _context.CartHeaders
+                    var cartHeaderToRemove = await _context.CartDetails
                         .FirstOrDefaultAsync(c => c.Id == cartDetailsId);
-                    _context.CartHeaders.Remove(cartHeaderToRemove);
+                    _context.CartDetails.Remove(cartHeaderToRemove);
                 }
                 await _context.SaveChangesAsync();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
                 return false;
             }
 

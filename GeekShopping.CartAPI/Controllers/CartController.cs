@@ -51,7 +51,7 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("apply-coupon")]
         public async Task<ActionResult<CartViewModel>> ApplyCoupon(CartViewModel cartViewModel)
         {
-            var status = await _cartRepository.ApplyCoupon(cartViewModel.CartHeader.UserId, cartViewModel.CartHeader.UserId);
+            var status = await _cartRepository.ApplyCoupon(cartViewModel.CartHeader.UserId, cartViewModel.CartHeader.CouponCode);
             if (!status) return NotFound();
             return Ok(status);
         }
