@@ -9,13 +9,15 @@ namespace GeekShopping.CartAPI.RabbitMQSender
     public class RabbitMQMessageSender : IRabbitMQMessageSender
     {
         private readonly string _hostName;
+        private readonly int _port;
         private readonly string _password;
         private readonly string _userName;
         private IConnection _connection;
 
         public RabbitMQMessageSender()
         {
-            _hostName = "localhost";
+            _hostName = "http://localhost";
+            _port = 15672;
             _password = "guest";
             _userName = "guest";
         }
@@ -25,6 +27,7 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             var factory = new ConnectionFactory
             {
                 HostName = _hostName,
+                Port = _port,
                 UserName = _userName,
                 Password = _password
             };
