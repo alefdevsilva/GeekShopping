@@ -16,8 +16,8 @@ namespace GeekShopping.CartAPI.RabbitMQSender
 
         public RabbitMQMessageSender()
         {
-            _hostName = "http://localhost";
-            _port = 15672;
+            _hostName = "host.docker.internal";
+            _port = 5672;
             _password = "guest";
             _userName = "guest";
         }
@@ -29,7 +29,7 @@ namespace GeekShopping.CartAPI.RabbitMQSender
                 HostName = _hostName,
                 Port = _port,
                 UserName = _userName,
-                Password = _password
+                Password = _password,
             };
 
             _connection = factory.CreateConnection();
