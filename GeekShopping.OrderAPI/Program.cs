@@ -1,4 +1,5 @@
 using GeekShopping.OrderAPI.Model.Context;
+using GeekShopping.OrderAPI.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -8,9 +9,10 @@ var builder = WebApplication.CreateBuilder(args);
 var connection = builder.Configuration["SQLServerConnection:SQLServerConnectionString"];
 builder.Services.AddDbContext<SQLServerContext>(options => options.UseSqlServer(connection));
 
-//builder.Services.AddScoped<ICartRepository, CartRepository>();
-//builder.Services.AddSingleton<IRabbitMQMessageSender, RabbitMQMessageSender>();
+var builderDBContext = new DbContextOptionsBuilder<SQLServerContext>();
+builderDBContext.UseSqlServer(connection);
 
+builder.Services.AddSingleton(new OrderRepository(builderDBContext.Options));
 builder.Services.AddControllers();
 
 builder.Services.AddAuthentication("Bearer")
