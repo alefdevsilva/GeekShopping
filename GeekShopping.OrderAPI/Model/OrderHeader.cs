@@ -18,7 +18,7 @@ namespace GeekShopping.OrderAPI.Model
         public string CVV { get; set; }
         public string ExpiryMonthYear { get; set; }
         public int OrderTotalItens { get; set; }
-        public IEnumerable<OrderDetail> OrderDetails { get; set; }
+        public List<OrderDetail> OrderDetails { get; set; }
         public bool PaymentStatus { get; set; }
 
     }
