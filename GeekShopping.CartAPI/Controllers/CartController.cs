@@ -12,12 +12,16 @@ namespace GeekShopping.CartAPI.Controllers
     public class CartController : ControllerBase
     {
         private ICartRepository _cartRepository;
+        private ICouponRepository _couponRepository;
         private IRabbitMQMessageSender _rabbitMQMessageSender;
 
-        public CartController(ICartRepository cartRepository, IRabbitMQMessageSender rabbitMQMessageSender)
+        public CartController(ICartRepository cartRepository, 
+            IRabbitMQMessageSender rabbitMQMessageSender, 
+            ICouponRepository couponRepository)
         {
             _cartRepository = cartRepository;
             _rabbitMQMessageSender = rabbitMQMessageSender;
+            _couponRepository = couponRepository;
         }
 
         [HttpGet("find-cart/{id}")]
@@ -71,11 +75,18 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<ActionResult<CheckoutHeaderDTO>> Checkout(CheckoutHeaderDTO checkoutHeaderDTO)
         {
+            string token = Request.Headers["Authorization"];
             if (checkoutHeaderDTO?.UserId == null) return BadRequest();
 
             var cart = await _cartRepository.FindCartByUserId(checkoutHeaderDTO.UserId);
             if (cart == null) return NotFound();
 
+            if (!string.IsNullOrEmpty(checkoutHeaderDTO.CouponCode))
+            {
+                var coupon = await _couponRepository.GetCouponByCouponCode(checkoutHeaderDTO.CouponCode, token);
+                if (checkoutHeaderDTO.DiscountAmount != coupon.DiscountAmount) 
+                    return StatusCode(412);
+            }
             checkoutHeaderDTO.CartDetails = cart.CartDetails;
             checkoutHeaderDTO.DateTime = DateTime.Now;
 
