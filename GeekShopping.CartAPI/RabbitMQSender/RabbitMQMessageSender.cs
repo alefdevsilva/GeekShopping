@@ -24,20 +24,13 @@ namespace GeekShopping.CartAPI.RabbitMQSender
 
         public void SendMessage(BaseMessage messsage, string queueName)
         {
-            var factory = new ConnectionFactory
+            if (ConnectionExists())
             {
-                HostName = _hostName,
-                Port = _port,
-                UserName = _userName,
-                Password = _password,
-            };
-
-            _connection = factory.CreateConnection();
-
-            using var channel = _connection.CreateModel();
-            channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
-            byte[] body = GetMessageAsByteArray(messsage);
-            channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+                using var channel = _connection.CreateModel();
+                channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
+                byte[] body = GetMessageAsByteArray(messsage);
+                channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+            }
         }
 
         private byte[] GetMessageAsByteArray(BaseMessage messsage)
@@ -50,6 +43,35 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             var json = JsonSerializer.Serialize<CheckoutHeaderDTO>((CheckoutHeaderDTO)messsage, options);
             var body = Encoding.UTF8.GetBytes(json);
             return body;
+        }
+
+        private bool ConnectionExists()
+        {
+            if (_connection != null) return true;
+            CreateConnection();
+            return _connection != null;
+        }
+
+        private void CreateConnection()
+        {
+            try
+            {
+                var factory = new ConnectionFactory
+                {
+                    HostName = _hostName,
+                    Port = _port,
+                    UserName = _userName,
+                    Password = _password,
+                };
+
+                _connection = factory.CreateConnection();
+            }
+            catch (Exception)
+            {
+                //Log Exception
+                throw;
+            }
+            throw new NotImplementedException();
         }
     }
 }
