@@ -1,6 +1,7 @@
 ﻿
 using GeekShopping.OrderAPI.Messages;
 using GeekShopping.OrderAPI.Model;
+using GeekShopping.OrderAPI.RabbitMQSender;
 using GeekShopping.OrderAPI.Repository;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -14,10 +15,12 @@ namespace GeekShopping.OrderAPI.MessageConsumer
         private readonly OrderRepository _orderRepository;
         private IConnection _connection;
         private IModel _channel;
+        private IRabbitMQMessageSender _rabbitMQMessageSender;
 
-        public RabbitMQCheckoutConsumer(OrderRepository orderRepository)
+        public RabbitMQCheckoutConsumer(OrderRepository orderRepository, IRabbitMQMessageSender rabbitMQMessageSender)
         {
             _orderRepository = orderRepository;
+            _rabbitMQMessageSender = rabbitMQMessageSender;
             var factory = new ConnectionFactory
             {
                 HostName = "host.docker.internal",
@@ -60,13 +63,13 @@ namespace GeekShopping.OrderAPI.MessageConsumer
                 CVV = checkoutHeaderViewModel.CVV,
                 DiscountAmount = checkoutHeaderViewModel.DiscountAmount,
                 Email = checkoutHeaderViewModel.Email,
-                ExpiryMonthYear = checkoutHeaderViewModel.ExpiryMonthYear +="Teste",
+                ExpiryMonthYear = checkoutHeaderViewModel.ExpiryMonthYear += "Teste",
                 OrderTime = DateTime.Now,
                 PurchaseAmount = checkoutHeaderViewModel.PurchaseAmount,
                 PaymentStatus = false,
                 Phone = checkoutHeaderViewModel.Phone,
                 PurchaseDate = checkoutHeaderViewModel.DateTime,
-                
+
             };
 
             foreach (var details in checkoutHeaderViewModel.CartDetails)
@@ -84,6 +87,27 @@ namespace GeekShopping.OrderAPI.MessageConsumer
             }
 
             await _orderRepository.AddOrder(orderHeader);
+
+            PaymentViewModel payment = new()
+            {
+                Name = orderHeader.FirstName + " " + orderHeader.LastName,
+                CardNumber = orderHeader.CardNumber,
+                CVV = orderHeader.CVV,
+                ExpiryMonthYear = orderHeader.ExpiryMonthYear + " ",
+                OrderId = orderHeader.Id,
+                PurchaseAmount = orderHeader.PurchaseAmount,
+                Email = orderHeader.Email
+            };
+
+            try
+            {
+                _rabbitMQMessageSender.SendMessage(payment, "orderpaymentprocessqueue");
+            }
+            catch (Exception)
+            {
+                //Log
+                throw;
+            }
         }
     }
 }
