@@ -13,6 +13,7 @@ namespace GeekShopping.PaymentAPI.RabbitMQSender
         private readonly string _password;
         private readonly string _userName;
         private IConnection _connection;
+        private const string ExchangeName = "FanoutPaymentUpdateExchange";
 
         public RabbitMQMessageSender()
         {
@@ -22,7 +23,7 @@ namespace GeekShopping.PaymentAPI.RabbitMQSender
             _userName = "guest";
         }
 
-        public void SendMessage(BaseMessage messsage, string queueName)
+        public void SendMessage(BaseMessage messsage)
         {
             var factory = new ConnectionFactory
             {
@@ -35,9 +36,9 @@ namespace GeekShopping.PaymentAPI.RabbitMQSender
             _connection = factory.CreateConnection();
 
             using var channel = _connection.CreateModel();
-            channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
+            channel.ExchangeDeclare(ExchangeName, ExchangeType.Fanout, durable: false);
             byte[] body = GetMessageAsByteArray(messsage);
-            channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+            channel.BasicPublish(exchange: ExchangeName, "", basicProperties: null, body: body);
         }
 
         private byte[] GetMessageAsByteArray(BaseMessage messsage)
