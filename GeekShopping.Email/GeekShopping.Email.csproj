@@ -22,9 +22,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\GeekShopping.MessageBus\GeekShopping.MessageBus.csproj" />
 	</ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
