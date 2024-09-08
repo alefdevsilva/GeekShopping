@@ -20,7 +20,7 @@ namespace GeekShopping.Email.MessageConsumer
             _emailRepository = emailRepository;
             var factory = new ConnectionFactory
             {
-                HostName = "host.docker.internal",
+                HostName = "localhost",
                 UserName = "guest",
                 Password = "guest",
                 Port = 5672

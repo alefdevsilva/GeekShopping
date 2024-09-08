@@ -19,7 +19,7 @@ namespace GeekShopping.PaymentAPI.RabbitMQSender
 
         public RabbitMQMessageSender()
         {
-            _hostName = "host.docker.internal";
+            _hostName = "localhost";
             _port = 5672;
             _password = "guest";
             _userName = "guest";
@@ -44,11 +44,18 @@ namespace GeekShopping.PaymentAPI.RabbitMQSender
             channel.QueueBind(PaymentEmailUpdateQueueName, ExchangeName, "PaymentEmail");
             channel.QueueBind(PaymentOrderUpdateQueueName, ExchangeName, "PaymentOrder");
 
-            byte[] body = GetMessageAsByteArray(messsage);
-            channel.BasicPublish(
-                exchange: ExchangeName, "PaymentEmail", basicProperties: null, body: body);
-            channel.BasicPublish(
-                exchange: ExchangeName, "PaymentOrder", basicProperties: null, body: body);
+            try
+            {
+                byte[] body = GetMessageAsByteArray(messsage);
+                channel.BasicPublish(
+                    exchange: ExchangeName, "PaymentEmail", basicProperties: null, body: body);
+                channel.BasicPublish(
+                    exchange: ExchangeName, "PaymentOrder", basicProperties: null, body: body);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         private byte[] GetMessageAsByteArray(BaseMessage messsage)

@@ -4,6 +4,7 @@ using GeekShopping.OrderAPI.Model.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeekShopping.OrderAPI.Migrations
 {
     [DbContext(typeof(SQLServerContext))]
-    partial class SQLServerContextModelSnapshot : ModelSnapshot
+    [Migration("20240908154806_tornando_campo_CouponCode_da_tabela_Headers_Nulo")]
+    partial class tornando_campo_CouponCode_da_tabela_Headers_Nulo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

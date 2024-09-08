@@ -23,7 +23,7 @@ namespace GeekShopping.OrderAPI.MessageConsumer
             _rabbitMQMessageSender = rabbitMQMessageSender;
             var factory = new ConnectionFactory
             {
-                HostName = "host.docker.internal",
+                HostName = "localhost",
                 UserName = "guest",
                 Password = "guest",
                 Port = 5672
