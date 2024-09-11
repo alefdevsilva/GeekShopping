@@ -21,7 +21,7 @@ namespace GeekShopping.OrderAPI.MessageConsumer
             _orderRepository = orderRepository;
             var factory = new ConnectionFactory
             {
-                HostName = "host.docker.internal",
+                HostName = "localhost",
                 UserName = "guest",
                 Password = "guest",
                 Port = 5672
