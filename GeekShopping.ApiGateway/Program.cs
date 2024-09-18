@@ -4,24 +4,19 @@ using Ocelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-
-var app = builder.Build();
-
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", options =>
     {
         options.Authority = "https://localhost:4435/";
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = false,
+            ValidateAudience = false
         };
     });
 
 builder.Services.AddOcelot();
-// Configure the HTTP request pipeline.
+
+var app = builder.Build();
 
 app.UseOcelot();
 
